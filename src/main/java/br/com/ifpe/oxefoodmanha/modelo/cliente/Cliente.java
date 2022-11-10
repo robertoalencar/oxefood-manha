@@ -42,4 +42,12 @@ public class Cliente extends EntidadeAuditavel {
     @Column
     private String foneAlternativo;
     
+    public void updateFrom(Cliente param) {
+	
+	this.setChaveEmpresa(param.getChaveEmpresa());
+	this.setNome(param.getNome());
+	this.setCpf(param.getCpf());
+	this.setFone(param.getFone());
+	this.setFoneAlternativo(param.getFoneAlternativo());
+    }
 }
