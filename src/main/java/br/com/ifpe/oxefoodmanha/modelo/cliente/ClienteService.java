@@ -1,32 +1,54 @@
 package br.com.ifpe.oxefoodmanha.modelo.cliente;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.ifpe.oxefoodmanha.modelo.produto.CategoriaProduto;
+import br.com.ifpe.oxefoodmanha.modelo.acesso.UsuarioService;
+import br.com.ifpe.oxefoodmanha.modelo.mensagens.EmailService;
 import br.com.ifpe.oxefoodmanha.util.entity.GenericService;
+import br.com.ifpe.oxefoodmanha.util.exception.EntidadeNaoEncontradaException;
 
 @Service
 public class ClienteService extends GenericService {
 
     @Autowired
     private ClienteRepository repository;
+    
+    @Autowired
+    private EmailService emailService;
+    
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Transactional
     public Cliente save(Cliente cliente) {
+	
+	usuarioService.save(cliente.getUsuario());
 
 	super.preencherCamposAuditoria(cliente);
-	return repository.save(cliente);
+	Cliente clienteSalvo = repository.save(cliente);
+	
+	//emailService.enviarEmailConfirmacaoCadastroCliente(clienteSalvo);
+	
+	return clienteSalvo;
+
     }
     
     @Transactional
     public Cliente obterClientePorID(Long id) {
-
-	return repository.findById(id).get();
+	
+	Optional<Cliente> consulta = repository.findById(id);
+	
+	if (consulta.isPresent()) {
+	    return consulta.get();
+	} else {
+	    throw new EntidadeNaoEncontradaException("Cliente", id);
+	}
     }
 
     @Transactional

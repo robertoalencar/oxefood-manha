@@ -1,12 +1,16 @@
 package br.com.ifpe.oxefoodmanha.modelo.cliente;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Where;
 
+import br.com.ifpe.oxefoodmanha.modelo.acesso.Usuario;
 import br.com.ifpe.oxefoodmanha.util.entity.EntidadeAuditavel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +30,12 @@ public class Cliente extends EntidadeAuditavel {
     
     private static final long serialVersionUID = -8278376605226570298L;
 
-    @NotNull
     @Column(nullable = false)
     private String chaveEmpresa;
+    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Usuario usuario;
     
     @Column
     private String nome;
@@ -42,6 +49,9 @@ public class Cliente extends EntidadeAuditavel {
     @Column
     private String foneAlternativo;
     
+    @Column
+    private LocalDate dataNacimento;
+    
     public void updateFrom(Cliente param) {
 	
 	this.setChaveEmpresa(param.getChaveEmpresa());
@@ -49,5 +59,6 @@ public class Cliente extends EntidadeAuditavel {
 	this.setCpf(param.getCpf());
 	this.setFone(param.getFone());
 	this.setFoneAlternativo(param.getFoneAlternativo());
+	this.setDataNacimento(param.getDataNacimento());
     }
 }
